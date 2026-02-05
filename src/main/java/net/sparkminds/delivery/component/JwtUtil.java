@@ -14,18 +14,18 @@ public class JwtUtil {
     private final long ACCESS_EXPIRE = 1000 * 60 * 5;      // 5 phút
     private final long REFRESH_EXPIRE = 1000 * 60 * 60 * 24 * 7; // 7 ngày
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRE))
                 .signWith(key)
                 .compact();
     }
 
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRE))
                 .signWith(key)

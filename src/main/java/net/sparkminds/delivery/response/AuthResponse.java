@@ -1,4 +1,4 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.response;
 
 import lombok.Data;
 

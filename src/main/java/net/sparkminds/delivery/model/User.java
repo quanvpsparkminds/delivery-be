@@ -1,6 +1,7 @@
 package net.sparkminds.delivery.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
 
@@ -11,7 +12,7 @@ import java.time.LocalDate;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-
+@Data
 public class User {
 
     @Id

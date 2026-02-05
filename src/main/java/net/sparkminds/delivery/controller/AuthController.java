@@ -3,11 +3,12 @@ package net.sparkminds.delivery.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.sparkminds.delivery.component.JwtUtil;
-import net.sparkminds.delivery.model.Delivery;
 import net.sparkminds.delivery.response.ApiResponse;
+import net.sparkminds.delivery.response.AuthResponse;
+import net.sparkminds.delivery.service.AuthService;
 import net.sparkminds.delivery.service.UserService;
-import net.sparkminds.delivery.service.dto.AuthResponse;
 import net.sparkminds.delivery.service.dto.LoginRequest;
+import net.sparkminds.delivery.service.dto.RefreshTokenRequest;
 import net.sparkminds.delivery.service.dto.RegisterRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody LoginRequest request) {
-        String accessToken = jwtUtil.generateToken(request.getUserName());
-        String refreshToken = jwtUtil.generateRefreshToken(request.getUserName());
-        AuthResponse response = new AuthResponse(accessToken, refreshToken);
+        AuthResponse response = authService.login(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<AuthResponse>> refresh(@RequestBody String request) {
-        System.out.println(request);
-        String userName = jwtUtil.extractUsername(request);
-        String accessToken = jwtUtil.generateToken(userName);
-        String refreshToken = jwtUtil.generateRefreshToken(userName);
+    public ResponseEntity<ApiResponse<AuthResponse>> refresh(@RequestBody RefreshTokenRequest request) {
+        String email = jwtUtil.extractUsername(request.getRefreshToken());
+        String accessToken = jwtUtil.generateToken(email);
+        String refreshToken = jwtUtil.generateRefreshToken(email);
         AuthResponse response = new AuthResponse(accessToken, refreshToken);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }

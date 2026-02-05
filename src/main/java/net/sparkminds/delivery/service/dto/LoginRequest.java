@@ -1,12 +1,13 @@
 package net.sparkminds.delivery.service.dto;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class LoginRequest {
-    private String userName;
-    private String passWord;
+    @NotBlank
+    private String email;
 
+    @NotBlank
+    private String password;
 }

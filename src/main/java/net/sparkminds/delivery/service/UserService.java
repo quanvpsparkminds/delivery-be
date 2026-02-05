@@ -35,7 +35,6 @@ public class UserService {
                 request.getPhoneNumber(),
                 passwordEncoder.encode(request.getPassword())
         );
-
         userRepository.save(user);
     }
 }
