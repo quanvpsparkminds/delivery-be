@@ -1,24 +1,12 @@
 package net.sparkminds.delivery.service.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateDeliveryRequest {
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     @NotBlank(message = "Customer name is Required")
     @Size(min = 2, max = 100, message = "Customer name must be between 2 and 100 character")
     private String customerName;
