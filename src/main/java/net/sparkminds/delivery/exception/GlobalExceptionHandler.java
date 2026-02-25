@@ -1,13 +1,13 @@
 package net.sparkminds.delivery.exception;
 
 import net.sparkminds.delivery.response.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingPathVariableException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +54,44 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(
                         "INVALID_JSON",
                         "Request body is invalid JSON format",
+                        null
+                ));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<?>> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex
+    ) {
+        String message = "Data integrity violation";
+        String detail = null;
+
+        // Extract constraint info from root cause
+        Throwable rootCause = ex.getRootCause();
+        if (rootCause != null && rootCause.getMessage() != null) {
+            String rootMsg = rootCause.getMessage();
+            if (rootMsg.contains("not-null constraint")) {
+                // Extract column name: null value in column "address"
+                java.util.regex.Matcher matcher = java.util.regex.Pattern
+                        .compile("null value in column \"(\\w+)\"")
+                        .matcher(rootMsg);
+                if (matcher.find()) {
+                    String column = matcher.group(1);
+                    message = "Field '" + column + "' must not be null";
+                } else {
+                    message = "A required field is missing";
+                }
+            } else if (rootMsg.contains("duplicate key") || rootMsg.contains("unique constraint")) {
+                message = "A record with this value already exists";
+            } else if (rootMsg.contains("foreign key constraint")) {
+                message = "Referenced record does not exist";
+            }
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(
+                        "DATA_INTEGRITY_ERROR",
+                        message,
                         null
                 ));
     }

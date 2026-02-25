@@ -1,8 +1,10 @@
 package net.sparkminds.delivery.component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -10,15 +12,28 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long ACCESS_EXPIRE = 1000 * 60 * 5;      // 5 phút
-    private final long REFRESH_EXPIRE = 1000 * 60 * 60 * 24 * 7; // 7 ngày
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${jwt.access-expire}")
+    private long accessExpire;
+
+    @Value("${jwt.refresh-expire}")
+    private long refreshExpire;
+
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRE))
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpire))
                 .signWith(key)
                 .compact();
     }
@@ -27,19 +42,18 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRE))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpire))
                 .signWith(key)
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return Jwts.parserBuilder()
+    public String extractEmail(String token) {
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+        return claims.getSubject();
     }
-
-
 }

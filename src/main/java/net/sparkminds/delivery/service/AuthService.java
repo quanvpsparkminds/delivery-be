@@ -3,7 +3,9 @@ package net.sparkminds.delivery.service;
 import lombok.RequiredArgsConstructor;
 import net.sparkminds.delivery.component.JwtUtil;
 import net.sparkminds.delivery.exception.BaseException;
+import net.sparkminds.delivery.model.Restaurant;
 import net.sparkminds.delivery.model.User;
+import net.sparkminds.delivery.repository.RestaurantRepository;
 import net.sparkminds.delivery.repository.UserRepository;
 import net.sparkminds.delivery.response.AuthResponse;
 import net.sparkminds.delivery.service.dto.LoginRequest;
@@ -14,30 +16,51 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BaseException(
-                        "UNAUTHORIZED",
-                        "Invalid email or password",
-                        HttpStatus.UNAUTHORIZED
-                ));
+        String email = request.getEmail();
+        String rawPassword = request.getPassword();
 
-        if (!passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        )) {
-            throw new BaseException(
-                    "UNAUTHORIZED",
-                    "Invalid email or password",
-                    HttpStatus.UNAUTHORIZED
-            );
+        String encodedPassword;
+        String subject; // email sẽ đưa vào JWT
+
+        switch (request.getMode()) {
+            case USER -> {
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> unauthorized());
+
+                encodedPassword = user.getPassword();
+                subject = user.getEmail();
+            }
+            case RESTAURANT -> {
+                Restaurant restaurant = restaurantRepository.findByEmail(email)
+                        .orElseThrow(() -> unauthorized());
+                encodedPassword = restaurant.getPassword();
+                subject = restaurant.getEmail();
+            }
+            default -> throw unauthorized();
         }
-        AuthResponse response = new AuthResponse(jwtUtil.generateToken(user.getEmail()), jwtUtil.generateRefreshToken(user.getEmail()));
-        return response;
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+            throw unauthorized();
+        }
+
+        return new AuthResponse(
+                jwtUtil.generateToken(subject),
+                jwtUtil.generateRefreshToken(subject)
+        );
+    }
+
+    private BaseException unauthorized() {
+        return new BaseException(
+                "UNAUTHORIZED",
+                "Invalid email or password",
+                HttpStatus.UNAUTHORIZED
+        );
     }
 }
