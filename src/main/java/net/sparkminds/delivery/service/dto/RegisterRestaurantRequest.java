@@ -19,7 +19,7 @@ public class RegisterRestaurantRequest {
     private String fullName;
 
     @NotBlank
-    private String numberCode;
+    private String phoneCode;
 
     @NotBlank
     private String phoneNumber;

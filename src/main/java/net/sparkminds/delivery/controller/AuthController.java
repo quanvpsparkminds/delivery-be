@@ -55,7 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/registerRestaurant")
-    private ResponseEntity<ApiResponse<RestaurantResponse>> registerRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
+    public ResponseEntity<ApiResponse<RestaurantResponse>> registerRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
         RestaurantResponse response = restaurantService.registerRestaurant(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
     }

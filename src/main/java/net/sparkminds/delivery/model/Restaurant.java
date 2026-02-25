@@ -1,10 +1,7 @@
 package net.sparkminds.delivery.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.util.UUID;
 
 @Entity
 @Table(
@@ -16,10 +13,9 @@ import java.util.UUID;
 
 @Data
 public class Restaurant {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -30,8 +26,8 @@ public class Restaurant {
     @Column(name = "full_name", nullable = false, length = 256)
     private String fullName;
 
-    @Column(name = "number_code", nullable = false)
-    private String numberCode;
+    @Column(name = "phone_code", nullable = false)
+    private String phoneCode;
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
@@ -49,11 +45,11 @@ public class Restaurant {
     private String postCode;
 
 
-    public Restaurant(String email, String password, String fullName, String numberCode, String phoneNumber, int countryId, int cityId, String address, String postCode) {
+    public Restaurant(String email, String password, String fullName, String phoneCode, String phoneNumber, int countryId, int cityId, String address, String postCode) {
         this.email = email;
         this.password = password;
         this.fullName = fullName;
-        this.numberCode = numberCode;
+        this.phoneCode = phoneCode;
         this.phoneNumber = phoneNumber;
         this.countryId = countryId;
         this.cityId = cityId;

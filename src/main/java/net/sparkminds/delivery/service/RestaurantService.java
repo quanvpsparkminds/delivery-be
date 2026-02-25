@@ -50,7 +50,7 @@ public class RestaurantService {
                 .orElseThrow(() -> new BaseException("USER_NOT_FOUND", "User not found", HttpStatus.NOT_FOUND));
 
         Optional.ofNullable(request.getFullName()).ifPresent(restaurant::setFullName);
-        Optional.ofNullable(request.getNumberCode()).ifPresent(restaurant::setNumberCode);
+        Optional.ofNullable(request.getPhoneCode()).ifPresent(restaurant::setPhoneCode);
         Optional.ofNullable(request.getPhoneNumber()).ifPresent(restaurant::setPhoneNumber);
         Optional.ofNullable(request.getCountryId()).ifPresent(restaurant::setCountryId);
         Optional.ofNullable(request.getCityId()).ifPresent(restaurant::setCityId);

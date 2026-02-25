@@ -12,7 +12,7 @@ public class RestaurantMapper {
         restaurant.setEmail(request.getEmail());
         restaurant.setPassword(encodedPassword);
         restaurant.setFullName(request.getFullName());
-        restaurant.setNumberCode(request.getNumberCode());
+        restaurant.setPhoneCode(request.getPhoneCode());
         restaurant.setPhoneNumber(request.getPhoneNumber());
         restaurant.setCountryId(request.getCountryId());
         restaurant.setCityId(request.getCityId());
@@ -23,10 +23,9 @@ public class RestaurantMapper {
 
     public RestaurantResponse toResponse(Restaurant restaurant) {
         RestaurantResponse response = new RestaurantResponse();
-        response.setId(restaurant.getId());
         response.setEmail(restaurant.getEmail());
         response.setFullName(restaurant.getFullName());
-        response.setNumberCode(restaurant.getNumberCode());
+        response.setPhoneCode(restaurant.getPhoneCode());
         response.setPhoneNumber(restaurant.getPhoneNumber());
         response.setCountryId(restaurant.getCountryId());
         response.setCityId(restaurant.getCityId());

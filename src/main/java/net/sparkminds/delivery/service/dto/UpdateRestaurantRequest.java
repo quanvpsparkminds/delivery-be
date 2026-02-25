@@ -8,7 +8,7 @@ public class UpdateRestaurantRequest {
     @Size(max = 256)
     private String fullName;
 
-    private String numberCode;
+    private String phoneCode;
 
     private String phoneNumber;
 
