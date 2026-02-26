@@ -8,14 +8,11 @@ import net.sparkminds.delivery.enums.EFood;
 
 @Data
 public class CreateMenuRequest {
-    @NotNull
-    private Long restaurantId;
-
     @NotBlank
     @Size(max = 100)
     private String name;
 
-    @NotBlank
+    @NotNull
     private Float price;
 
     private Float originPrice;

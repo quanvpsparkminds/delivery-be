@@ -1,5 +1,7 @@
 package net.sparkminds.delivery.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ import java.time.LocalDate;
         }
 )
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -35,6 +38,7 @@ public class User {
     private String phoneNumber;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     public User() {

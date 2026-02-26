@@ -1,5 +1,6 @@
 package net.sparkminds.delivery.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import net.sparkminds.delivery.enums.EFood;

@@ -1,8 +1,10 @@
 package net.sparkminds.delivery.repository;
 
-import net.sparkminds.delivery.model.Menu;
+import net.sparkminds.delivery.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
+import java.util.UUID;
+
+public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order> {
 }

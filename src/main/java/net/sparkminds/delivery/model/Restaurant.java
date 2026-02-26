@@ -1,5 +1,7 @@
 package net.sparkminds.delivery.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,6 +14,7 @@ import lombok.Data;
 )
 
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,7 @@ public class Restaurant {
     private String email;
 
     @Column(name = "password", nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(name = "full_name", nullable = false, length = 256)
