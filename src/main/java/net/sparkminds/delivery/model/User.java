@@ -9,13 +9,12 @@ import java.time.LocalDate;
 
 @Entity
 @Table(
-        name = "users",
+        name = "t_users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         }
 )
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id

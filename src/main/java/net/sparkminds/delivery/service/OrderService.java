@@ -102,6 +102,7 @@ public class OrderService {
         return orderRepository.findAll(spec);
     }
 
+    @Transactional
     public Order updateStatus(UpdateStatusOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
         Optional<Restaurant> restaurantOpt = restaurantRepository.findByEmail(email);

@@ -7,7 +7,7 @@ import net.sparkminds.delivery.enums.EFood;
 
 @Entity
 @Table(
-        name = "menu"
+        name = "t_menu"
 )
 @Data
 public class Menu {

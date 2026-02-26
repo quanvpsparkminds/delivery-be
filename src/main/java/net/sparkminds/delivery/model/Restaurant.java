@@ -7,14 +7,13 @@ import lombok.Data;
 
 @Entity
 @Table(
-        name = "Restaurant",
+        name = "t_restaurant",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         }
 )
 
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
