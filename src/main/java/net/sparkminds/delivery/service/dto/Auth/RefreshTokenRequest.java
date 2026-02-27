@@ -1,4 +1,4 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.Auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

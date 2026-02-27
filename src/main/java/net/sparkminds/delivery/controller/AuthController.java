@@ -8,12 +8,14 @@ import net.sparkminds.delivery.response.AuthResponse;
 import net.sparkminds.delivery.response.RestaurantResponse;
 import net.sparkminds.delivery.response.UserResponse;
 import net.sparkminds.delivery.service.AuthService;
+import net.sparkminds.delivery.service.DeliveryService;
 import net.sparkminds.delivery.service.RestaurantService;
 import net.sparkminds.delivery.service.UserService;
-import net.sparkminds.delivery.service.dto.LoginRequest;
-import net.sparkminds.delivery.service.dto.RefreshTokenRequest;
-import net.sparkminds.delivery.service.dto.RegisterRequest;
-import net.sparkminds.delivery.service.dto.RegisterRestaurantRequest;
+import net.sparkminds.delivery.service.dto.Auth.LoginRequest;
+import net.sparkminds.delivery.service.dto.Auth.RefreshTokenRequest;
+import net.sparkminds.delivery.service.dto.Delivery.RegisterDeliveryRequest;
+import net.sparkminds.delivery.service.dto.User.RegisterRequest;
+import net.sparkminds.delivery.service.dto.Restaurant.RegisterRestaurantRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +31,7 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
     private final RestaurantService restaurantService;
+    private final DeliveryService deliveryService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
@@ -46,17 +49,22 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserResponse>> register(
+    public ResponseEntity<ApiResponse<AuthResponse>> register(
             @Valid @RequestBody RegisterRequest request) {
-        UserResponse user = userService.register(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.success(user));
+                .body(ApiResponse.success(userService.register(request)));
     }
 
-    @PostMapping("/registerRestaurant")
-    public ResponseEntity<ApiResponse<RestaurantResponse>> registerRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
-        RestaurantResponse response = restaurantService.registerRestaurant(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(response));
+    @PostMapping("/register/restaurant")
+    public ResponseEntity<ApiResponse<AuthResponse>> registerRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(restaurantService.registerRestaurant(request)));
+    }
+
+    @PostMapping("/register/delivery")
+    public ResponseEntity<ApiResponse<AuthResponse>> registerDelivery(@Valid @RequestBody RegisterDeliveryRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(deliveryService.registerDelivery(request)));
     }
 }

@@ -1,4 +1,4 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.Restaurant;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -19,4 +19,6 @@ public class UpdateRestaurantRequest {
     private String address;
 
     private String postCode;
+
+    private String image;
 }

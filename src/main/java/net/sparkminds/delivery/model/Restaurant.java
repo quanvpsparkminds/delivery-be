@@ -1,9 +1,9 @@
 package net.sparkminds.delivery.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import net.sparkminds.delivery.enums.ERestaurant;
 
 @Entity
 @Table(
@@ -47,8 +47,27 @@ public class Restaurant {
     @Column(name = "postCode")
     private String postCode;
 
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ERestaurant type;
 
-    public Restaurant(String email, String password, String fullName, String phoneCode, String phoneNumber, int countryId, int cityId, String address, String postCode) {
+    @Column(name = "image")
+    private String image;
+
+
+    public Restaurant(Long id,
+                      String email,
+                      String password,
+                      String fullName,
+                      String phoneCode,
+                      String phoneNumber,
+                      int countryId,
+                      int cityId,
+                      String address,
+                      String postCode,
+                      ERestaurant type,
+                      String image) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.fullName = fullName;
@@ -58,6 +77,8 @@ public class Restaurant {
         this.cityId = cityId;
         this.address = address;
         this.postCode = postCode;
+        this.type = type;
+        this.image = image;
     }
 
     public Restaurant() {

@@ -1,4 +1,4 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.Menu;
 
 import lombok.*;
 import net.sparkminds.delivery.enums.EFood;

@@ -1,14 +1,13 @@
 package net.sparkminds.delivery.service;
 
-import jakarta.transaction.Transactional;
 import net.sparkminds.delivery.Specification.MenuSpecification;
 import net.sparkminds.delivery.exception.BaseException;
 import net.sparkminds.delivery.model.Menu;
 import net.sparkminds.delivery.model.Restaurant;
 import net.sparkminds.delivery.repository.MenuRepository;
 import net.sparkminds.delivery.repository.RestaurantRepository;
-import net.sparkminds.delivery.service.dto.CreateMenuRequest;
-import net.sparkminds.delivery.service.dto.GetMenuRequest;
+import net.sparkminds.delivery.service.dto.Menu.CreateMenuRequest;
+import net.sparkminds.delivery.service.dto.Menu.GetMenuRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;

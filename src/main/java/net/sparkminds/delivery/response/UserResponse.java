@@ -13,14 +13,18 @@ public class UserResponse {
     private String lastName;
     private String email;
     private LocalDate birthday;
+    private String phoneCode;
     private String phoneNumber;
+    private String image;
 
-    public UserResponse(String firstName, String lastName, String email, LocalDate birthday, String phoneNumber) {
+    public UserResponse(String firstName, String lastName, String email, LocalDate birthday, String phoneCode, String phoneNumber,String image) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.birthday = birthday;
+        this.phoneCode = phoneCode;
         this.phoneNumber = phoneNumber;
+        this.image = image;
     }
 
     public UserResponse() {

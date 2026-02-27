@@ -1,7 +1,8 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.Restaurant;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import net.sparkminds.delivery.enums.ERestaurant;
 
 @Data
 public class RegisterRestaurantRequest {
@@ -34,4 +35,9 @@ public class RegisterRestaurantRequest {
     private String address;
 
     private String postCode;
+
+    @NotNull
+    private ERestaurant type;
+
+    private String image;
 }

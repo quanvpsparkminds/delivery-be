@@ -27,29 +27,36 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column
+    @Column(name = "birthday")
     private LocalDate birthday;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(nullable = false)
+    @Column(name = "phone_code")
+    private String phoneCode;
+
+    @Column(name = "password", nullable = false)
     @JsonIgnore
     private String password;
+
+    @Column(name = "image")
+    private String image;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, LocalDate birthday, String phoneNumber, String password) {
+    public User(String firstName, String lastName, String email, LocalDate birthday, String phoneNumber, String password, String image) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.birthday = birthday;
         this.phoneNumber = phoneNumber;
         this.password = password;
+        this.image = image;
     }
 }
 

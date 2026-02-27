@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 public class MenuSpecification {
     public static Specification<Menu> hasRestaurant(Long restaurantId) {
         return (root, query, cb) -> {
-            // fetch restaurant để tránh lazy lỗi
             if (Menu.class.equals(query.getResultType())) {
                 root.fetch("restaurant", JoinType.LEFT);
                 query.distinct(true);
@@ -18,9 +17,7 @@ public class MenuSpecification {
             if (restaurantId == null) {
                 return cb.conjunction(); // always true
             }
-
             Join<Object, Object> restaurantJoin = root.join("restaurant", JoinType.INNER);
-
             return cb.equal(restaurantJoin.get("id"), restaurantId);
         };
     }

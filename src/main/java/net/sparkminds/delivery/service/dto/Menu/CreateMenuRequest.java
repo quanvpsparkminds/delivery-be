@@ -1,4 +1,4 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.Menu;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

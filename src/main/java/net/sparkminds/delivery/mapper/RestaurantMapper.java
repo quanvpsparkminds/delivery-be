@@ -2,8 +2,10 @@ package net.sparkminds.delivery.mapper;
 
 import net.sparkminds.delivery.model.Restaurant;
 import net.sparkminds.delivery.response.RestaurantResponse;
-import net.sparkminds.delivery.service.dto.RegisterRestaurantRequest;
+import net.sparkminds.delivery.service.dto.Restaurant.RegisterRestaurantRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class RestaurantMapper {
@@ -18,6 +20,8 @@ public class RestaurantMapper {
         restaurant.setCityId(request.getCityId());
         restaurant.setAddress(request.getAddress());
         restaurant.setPostCode(request.getPostCode());
+        restaurant.setType(request.getType());
+        restaurant.setImage(request.getImage());
         return restaurant;
     }
 
@@ -31,6 +35,12 @@ public class RestaurantMapper {
         response.setCityId(restaurant.getCityId());
         response.setAddress(restaurant.getAddress());
         response.setPostCode(restaurant.getPostCode());
+        response.setType(restaurant.getType());
+        response.setImage(restaurant.getImage());
         return response;
+    }
+
+    public List<RestaurantResponse> toResponseList(List<Restaurant> restaurants) {
+        return restaurants.stream().map(e -> toResponse(e)).toList();
     }
 }

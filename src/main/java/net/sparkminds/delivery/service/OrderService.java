@@ -4,15 +4,17 @@ import lombok.RequiredArgsConstructor;
 import net.sparkminds.delivery.Specification.OrderSpecification;
 import net.sparkminds.delivery.enums.EOrderStatus;
 import net.sparkminds.delivery.exception.BaseException;
+import net.sparkminds.delivery.mapper.OrderMapper;
 import net.sparkminds.delivery.model.*;
 import net.sparkminds.delivery.repository.MenuRepository;
 import net.sparkminds.delivery.repository.OrderRepository;
 import net.sparkminds.delivery.repository.RestaurantRepository;
 import net.sparkminds.delivery.repository.UserRepository;
-import net.sparkminds.delivery.service.dto.CreateOrderRequest;
-import net.sparkminds.delivery.service.dto.GetOrderRequest;
-import net.sparkminds.delivery.service.dto.OrderItemRequest;
-import net.sparkminds.delivery.service.dto.UpdateStatusOrderRequest;
+import net.sparkminds.delivery.response.OrderResponse;
+import net.sparkminds.delivery.service.dto.Order.CreateOrderRequest;
+import net.sparkminds.delivery.service.dto.Order.GetOrderRequest;
+import net.sparkminds.delivery.service.dto.Order.OrderItemRequest;
+import net.sparkminds.delivery.service.dto.Order.UpdateStatusOrderRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -26,12 +28,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
+    private final OrderMapper orderMapper;
 
 
     public Order createOrder(CreateOrderRequest request) {
@@ -67,8 +69,10 @@ public class OrderService {
 
         for (OrderItemRequest itemReq : request.getItems()) {
 
-            Menu menu = menuRepository.findById(itemReq.getIdMenu()).orElseThrow(() -> new BaseException("MENU_NOT_FOUND",
-                    "Menu not found", HttpStatus.NOT_FOUND));
+            Menu menu = menuRepository.findById(itemReq.getIdMenu()).orElseThrow(() ->
+                    new BaseException("MENU_NOT_FOUND",
+                            "Menu not found",
+                            HttpStatus.NOT_FOUND));
 
 
             OrderItems item = new OrderItems();
@@ -82,8 +86,7 @@ public class OrderService {
         order.setItems(orderItems);
         order.setTotalAmount(total + deliveryFee);
 
-        Order savedOrder = orderRepository.save(order);
-        return savedOrder;
+        return orderRepository.save(order);
     }
 
     public List<Order> getOrder(GetOrderRequest request) {
@@ -103,7 +106,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order updateStatus(UpdateStatusOrderRequest request) {
+    public OrderResponse updateStatus(UpdateStatusOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
         Optional<Restaurant> restaurantOpt = restaurantRepository.findByEmail(email);
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -126,7 +129,10 @@ public class OrderService {
 
         order.setStatus(request.getStatus());
 
-        return orderRepository.save(order);
+        orderRepository.save(order);
+
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toDto(savedOrder);
     }
 
 }

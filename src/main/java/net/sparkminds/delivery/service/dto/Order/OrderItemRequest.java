@@ -1,6 +1,5 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.Order;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

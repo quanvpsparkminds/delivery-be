@@ -1,8 +1,5 @@
-package net.sparkminds.delivery.service.dto;
+package net.sparkminds.delivery.service.dto.User;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -16,4 +13,6 @@ public class UpdateUserRequest {
     private LocalDate birthday;
 
     private String phoneNumber;
+
+    private String image;
 }
