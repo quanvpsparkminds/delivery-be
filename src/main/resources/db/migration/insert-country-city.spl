@@ -1,0 +1,23 @@
+INSERT INTO delivery.public.m_country (name) VALUES ('Việt Nam');
+
+
+INSERT INTO m_city (name, country_id) VALUES ('Hà Nội', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Hồ Chí Minh', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Đà Nẵng', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Hải Phòng', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Cần Thơ', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Huế', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Nha Trang', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Vũng Tàu', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Đà Lạt', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Quy Nhơn', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Buôn Ma Thuột', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Biên Hòa', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Thủ Đức', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Long Xuyên', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Rạch Giá', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Bắc Ninh', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Thanh Hóa', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Vinh', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Phan Thiết', 1);
+INSERT INTO m_city (name, country_id) VALUES ('Tam Kỳ', 1);
