@@ -31,4 +31,12 @@ public class MenuController {
         List<Menu> response = menuService.getMenus(request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteMenu(@PathVariable Long id) {
+        menuService.deleteMenu(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(null));
+    }
 }

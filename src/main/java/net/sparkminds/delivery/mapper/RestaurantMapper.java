@@ -37,6 +37,8 @@ public class RestaurantMapper {
         response.setPostCode(restaurant.getPostCode());
         response.setType(restaurant.getType());
         response.setImage(restaurant.getImage());
+        response.setLng(restaurant.getLng());
+        response.setLat(restaurant.getLat());
         return response;
     }
 

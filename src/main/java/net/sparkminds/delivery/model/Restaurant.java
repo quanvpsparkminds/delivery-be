@@ -54,6 +54,12 @@ public class Restaurant {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "lng")
+    private String lng;
+
+    @Column(name = "lat")
+    private String lat;
+
 
     public Restaurant(Long id,
                       String email,
@@ -66,7 +72,10 @@ public class Restaurant {
                       String address,
                       String postCode,
                       ERestaurant type,
-                      String image) {
+                      String image,
+                      String lng,
+                      String lat
+    ) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -79,6 +88,8 @@ public class Restaurant {
         this.postCode = postCode;
         this.type = type;
         this.image = image;
+        this.lng = lng;
+        this.lat = lat;
     }
 
     public Restaurant() {

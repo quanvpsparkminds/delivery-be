@@ -25,7 +25,11 @@ public class RestaurantResponse {
 
     private String image;
 
-    public RestaurantResponse(String email, String fullName, String phoneCode, String phoneNumber, Number countryId, Number cityId, String address, String postCode, ERestaurant type, String image) {
+    private String lng;
+
+    private String lat;
+
+    public RestaurantResponse(String email, String fullName, String phoneCode, String phoneNumber, Number countryId, Number cityId, String address, String postCode, ERestaurant type, String image, String lng, String lat) {
         this.email = email;
         this.fullName = fullName;
         this.phoneCode = phoneCode;
@@ -36,6 +40,8 @@ public class RestaurantResponse {
         this.postCode = postCode;
         this.type = type;
         this.image = image;
+        this.lng = lng;
+        this.lat = lat;
     }
 
     public RestaurantResponse() {

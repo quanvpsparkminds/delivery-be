@@ -31,4 +31,11 @@ public class MenuSpecification {
                     );
         });
     }
+
+    public static Specification<Menu> hasDelete(Boolean isDelete) {
+        return (root, query, cb) ->
+                isDelete == null
+                        ? null
+                        : cb.equal(root.get("isDelete"), isDelete);
+    }
 }

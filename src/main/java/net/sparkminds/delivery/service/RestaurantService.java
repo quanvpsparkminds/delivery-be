@@ -14,6 +14,7 @@ import net.sparkminds.delivery.response.AuthResponse;
 import net.sparkminds.delivery.response.RestaurantResponse;
 import net.sparkminds.delivery.service.dto.Restaurant.GetRestaurantRequest;
 import net.sparkminds.delivery.service.dto.Restaurant.RegisterRestaurantRequest;
+import net.sparkminds.delivery.service.dto.Restaurant.UpdateLocationRequest;
 import net.sparkminds.delivery.service.dto.Restaurant.UpdateRestaurantRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
 import org.springframework.data.jpa.domain.Specification;
@@ -78,5 +79,23 @@ public class RestaurantService {
         List<Restaurant> restaurants = restaurantRepository.findAll(spec);
 
         return restaurantMapper.toResponseList(restaurants);
+    }
+
+    public RestaurantResponse updateLocation(UpdateLocationRequest request) {
+        String email = SecurityUtil.getCurrentUserEmail();
+        Restaurant restaurant = restaurantRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new BaseException("RESTAURANT_NOT_FOUND"
+                        , "Restaurant not found"
+                        , HttpStatus.NOT_FOUND));
+
+
+        restaurant.setLat(request.getLat());
+        restaurant.setLng(request.getLng());
+
+        Restaurant restaurantRp = restaurantRepository.save(restaurant);
+
+        return restaurantMapper.toResponse(restaurantRp);
+
     }
 }

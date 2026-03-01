@@ -8,6 +8,7 @@ import net.sparkminds.delivery.response.ApiResponse;
 import net.sparkminds.delivery.response.RestaurantResponse;
 import net.sparkminds.delivery.service.RestaurantService;
 import net.sparkminds.delivery.service.dto.Restaurant.GetRestaurantRequest;
+import net.sparkminds.delivery.service.dto.Restaurant.UpdateLocationRequest;
 import net.sparkminds.delivery.service.dto.Restaurant.UpdateRestaurantRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +35,16 @@ public class RestaurantController {
     }
 
     @GetMapping("/me")
-    private ResponseEntity<ApiResponse<RestaurantResponse>> getRestaurantMe(){
+    private ResponseEntity<ApiResponse<RestaurantResponse>> getRestaurantMe() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(restaurantService.getRestaurantMe()));
+    }
+
+    @PutMapping("/location")
+    private ResponseEntity<ApiResponse<RestaurantResponse>> updateLocation(@Valid @RequestBody UpdateLocationRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(restaurantService.updateLocation(request)));
     }
 }

@@ -41,13 +41,22 @@ public class MenuService {
                 request.getName(),
                 restaurant
         );
+        menu.setDelete(false);
         menuRepository.save(menu);
     }
 
     public List<Menu> getMenus(GetMenuRequest request) {
         Specification<Menu> spec = Specification
                 .where(MenuSpecification.hasRestaurant(request.getRestaurantId()))
-                .and(MenuSpecification.hasType(request.getType()));
+                .and(MenuSpecification.hasType(request.getType()))
+                .and(MenuSpecification.hasDelete(false));
         return menuRepository.findAll(spec);
+    }
+
+    public void deleteMenu(Long id) {
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new BaseException("MENU_NOT_FOUND", "Menu not found", HttpStatus.NOT_FOUND));
+        menu.setDelete(true);
+
+        menuRepository.save(menu);
     }
 }
