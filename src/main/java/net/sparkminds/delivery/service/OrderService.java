@@ -59,6 +59,9 @@ public class OrderService {
         order.setDeliveryAddress(request.getDeliveryAddress());
         order.setStatus(EOrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
+        order.setLng(request.getLng());
+        order.setLat(request.getLat());
+        order.setAddress(request.getAddress());
 
         List<OrderItems> orderItems = new ArrayList<>();
 

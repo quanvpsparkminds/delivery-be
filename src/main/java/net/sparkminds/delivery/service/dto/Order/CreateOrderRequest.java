@@ -18,4 +18,13 @@ public class CreateOrderRequest {
 
     @NotNull
     private List<OrderItemRequest> items;
+
+    @NotBlank
+    private String lng;
+
+    @NotBlank
+    private String lat;
+
+    @NotBlank
+    private String address;
 }

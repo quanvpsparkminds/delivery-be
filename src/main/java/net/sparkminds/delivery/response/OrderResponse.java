@@ -20,4 +20,7 @@ public class OrderResponse {
     private String deliveryAddress;
     private EOrderStatus status;
     private LocalDateTime createdAt;
+    private String lng;
+    private String lat;
+    private String address;
 }

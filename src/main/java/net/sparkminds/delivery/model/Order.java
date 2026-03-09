@@ -48,4 +48,13 @@ public class Order {
 
     @Column
     private LocalDateTime createdAt;
+
+    @Column(name = "lng")
+    private String lng;
+
+    @Column(name = "lat")
+    private String lat;
+
+    @Column(name = "address")
+    private String address;
 }

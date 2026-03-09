@@ -29,6 +29,9 @@ public class OrderMapper {
                 .deliveryAddress(order.getDeliveryAddress())
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
+                .lng(order.getLng())
+                .lat(order.getLat())
+                .address(order.getAddress())
                 .build();
     }
 
