@@ -36,7 +36,7 @@ public class Menu {
     private String image;
 
     @Column(name = "is_delete")
-    private boolean isDelete;
+    private Boolean isDelete;
 
     public Menu() {
     }

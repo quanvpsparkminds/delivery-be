@@ -11,7 +11,10 @@ import net.sparkminds.delivery.response.DeliveryResponse;
 import net.sparkminds.delivery.service.dto.Delivery.OnboardingDeliveryRequest;
 import net.sparkminds.delivery.service.dto.Delivery.RegisterDeliveryRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,8 @@ public class DeliveryService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final DeliveryMapper deliveryMapper;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     public AuthResponse registerDelivery(RegisterDeliveryRequest request) {
         if (deliveryRepository.existsByPhoneNumber(request.getPhoneNumber())) {
@@ -60,5 +65,13 @@ public class DeliveryService {
         Delivery delivery1 = deliveryRepository.save(deliveryMapper.toEntity(request, delivery));
 
         return deliveryMapper.toResponse(delivery1);
+    }
+
+    public void acceptOrder() {
+        //test
+        messagingTemplate.convertAndSend(
+                "/topic/restaurant/1",
+                "NEW_ORDER"
+        );
     }
 }

@@ -6,6 +6,7 @@ import net.sparkminds.delivery.enums.EOrderStatus;
 import net.sparkminds.delivery.model.Country;
 import net.sparkminds.delivery.response.ApiResponse;
 import net.sparkminds.delivery.service.CountryService;
+import net.sparkminds.delivery.service.DeliveryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,8 @@ import java.util.List;
 
 public class MasterDataController {
     private final CountryService countryService;
+    private final DeliveryService deliveryService;
+
     @GetMapping("/foods")
     public ResponseEntity<ApiResponse<?>> getFoodTypes() {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(EFood.values()));
@@ -33,5 +36,11 @@ public class MasterDataController {
     @GetMapping("/countries")
     public List<Country> getAll() {
         return countryService.getAll();
+    }
+
+    @GetMapping("/test-accept-order")
+    public ResponseEntity<ApiResponse<?>> testAcceptOrder() {
+        deliveryService.acceptOrder();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
 }

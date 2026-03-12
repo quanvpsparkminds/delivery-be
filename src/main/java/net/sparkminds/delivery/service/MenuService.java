@@ -41,7 +41,7 @@ public class MenuService {
                 request.getName(),
                 restaurant
         );
-        menu.setDelete(false);
+        menu.setIsDelete(false);
         menuRepository.save(menu);
     }
 
@@ -55,7 +55,7 @@ public class MenuService {
 
     public void deleteMenu(Long id) {
         Menu menu = menuRepository.findById(id).orElseThrow(() -> new BaseException("MENU_NOT_FOUND", "Menu not found", HttpStatus.NOT_FOUND));
-        menu.setDelete(true);
+        menu.setIsDelete(true);
 
         menuRepository.save(menu);
     }
