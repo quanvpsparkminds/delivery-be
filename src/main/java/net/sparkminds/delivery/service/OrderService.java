@@ -6,10 +6,7 @@ import net.sparkminds.delivery.enums.EOrderStatus;
 import net.sparkminds.delivery.exception.BaseException;
 import net.sparkminds.delivery.mapper.OrderMapper;
 import net.sparkminds.delivery.model.*;
-import net.sparkminds.delivery.repository.MenuRepository;
-import net.sparkminds.delivery.repository.OrderRepository;
-import net.sparkminds.delivery.repository.RestaurantRepository;
-import net.sparkminds.delivery.repository.UserRepository;
+import net.sparkminds.delivery.repository.*;
 import net.sparkminds.delivery.response.OrderResponse;
 import net.sparkminds.delivery.service.dto.Order.CreateOrderRequest;
 import net.sparkminds.delivery.service.dto.Order.GetOrderRequest;
@@ -34,8 +31,11 @@ public class OrderService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
     private final OrderMapper orderMapper;
+    private final DeliveryLocationService deliveryLocationService;
+    private final DeliveryService deliveryService;
+    private final DeliveryRepository deliveryRepository;
 
-
+    @Transactional
     public Order createOrder(CreateOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
         Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
@@ -59,8 +59,8 @@ public class OrderService {
         order.setDeliveryAddress(request.getDeliveryAddress());
         order.setStatus(EOrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
-        order.setLng(request.getLng());
-        order.setLat(request.getLat());
+        order.setLng(request.getLng().toString());
+        order.setLat(request.getLat().toString());
         order.setAddress(request.getAddress());
 
         List<OrderItems> orderItems = new ArrayList<>();
@@ -88,8 +88,21 @@ public class OrderService {
 
         order.setItems(orderItems);
         order.setTotalAmount(total + deliveryFee);
+        String idDelivery = deliveryLocationService.findNearby(request.getLat(), request.getLng(), 100).get(0);
+        System.out.print(idDelivery);
 
-        return orderRepository.save(order);
+
+        Delivery delivery = deliveryRepository.findById(Long.parseLong(idDelivery))
+                .orElseThrow(() -> new BaseException("DELIVERY_NOT_FOUND",
+                        "Delivery not found",
+                        HttpStatus.NOT_FOUND));
+        order.setDelivery(delivery);
+        Order response = orderRepository.save(order);
+
+        deliveryService.sendOrder(idDelivery);
+
+
+        return response;
     }
 
     public List<Order> getOrder(GetOrderRequest request) {
@@ -137,7 +150,6 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDto(savedOrder);
     }
-
 
 
 }

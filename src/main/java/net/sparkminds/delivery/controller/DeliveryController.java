@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import net.sparkminds.delivery.response.ApiResponse;
 import net.sparkminds.delivery.response.AuthResponse;
 import net.sparkminds.delivery.response.DeliveryResponse;
+import net.sparkminds.delivery.response.OrderResponse;
 import net.sparkminds.delivery.service.DeliveryService;
 import net.sparkminds.delivery.service.dto.Delivery.OnboardingDeliveryRequest;
 import net.sparkminds.delivery.service.dto.Delivery.RegisterDeliveryRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/delivery")
@@ -31,5 +34,12 @@ public class DeliveryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(deliveryService.onBoarding(request)));
+    }
+
+    @GetMapping("/order")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrder(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(deliveryService.getOrder()));
     }
 }

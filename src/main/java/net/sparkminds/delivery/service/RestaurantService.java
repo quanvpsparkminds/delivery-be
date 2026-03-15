@@ -19,6 +19,7 @@ import net.sparkminds.delivery.service.dto.Restaurant.UpdateRestaurantRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class RestaurantService {
     private final PasswordEncoder passwordEncoder;
     private final RestaurantMapper restaurantMapper;
     private final JwtUtil jwtUtil;
-
+    private final SimpMessagingTemplate messagingTemplate;
 
     public AuthResponse registerRestaurant(RegisterRestaurantRequest request) {
         if (restaurantRepository.existsByEmail(request.getEmail()) || userRepository.existsByEmail(request.getEmail())) {
@@ -97,5 +98,12 @@ public class RestaurantService {
 
         return restaurantMapper.toResponse(restaurantRp);
 
+    }
+
+    public void sendOrder(String id) {
+        messagingTemplate.convertAndSend(
+                "/topic/restaurant/" + id,
+                "NEW_ORDER"
+        );
     }
 }

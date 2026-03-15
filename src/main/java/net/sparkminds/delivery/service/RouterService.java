@@ -11,8 +11,6 @@ import java.util.Map;
 
 @Service
 public class RouterService {
-    private final String API_KEY = "YOUR_API_KEY";
-
     public DistanceResponse getDistance(RouterRequest request) {
         String url = "http://router.project-osrm.org/route/v1/driving/"
                 + request.getStartLng()

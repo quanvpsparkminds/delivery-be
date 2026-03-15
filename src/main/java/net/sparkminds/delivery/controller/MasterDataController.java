@@ -38,9 +38,4 @@ public class MasterDataController {
         return countryService.getAll();
     }
 
-    @GetMapping("/test-accept-order")
-    public ResponseEntity<ApiResponse<?>> testAcceptOrder() {
-        deliveryService.acceptOrder();
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
-    }
 }

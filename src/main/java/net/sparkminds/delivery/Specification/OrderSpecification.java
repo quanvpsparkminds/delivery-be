@@ -43,6 +43,25 @@ public class OrderSpecification {
         };
     }
 
+
+    public static Specification<Order> hasDelivery(Long deliveryId) {
+        return (root, query, cb) -> {
+            if (Order.class.equals(query.getResultType())) {
+                root.fetch("delivery", JoinType.LEFT);
+                root.fetch("items", JoinType.LEFT);
+                query.distinct(true);
+            }
+
+            if (deliveryId == null) {
+                return cb.conjunction(); // always true
+            }
+
+            Join<Object, Object> userJoin = root.join("delivery", JoinType.INNER);
+
+            return cb.equal(userJoin.get("id"), deliveryId);
+        };
+    }
+
     public static Specification<Order> status(EOrderStatus status) {
         return (root, query, cb) -> {
             if (status == null) return null;

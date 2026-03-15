@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class LocationSocketController {
 
-    private DeliveryLocationService deliveryLocationService;
+    private final DeliveryLocationService deliveryLocationService;
 
     @MessageMapping("/shipper/location")
     public void updateLocation(LocationDeliveryRequest request) {

@@ -18,6 +18,7 @@ public class DeliveryLocationService {
     private RedisTemplate<String, String> redisTemplate;
 
     public void updateLocation(LocationDeliveryRequest request) {
+        System.out.print(request.getLng());
         redisTemplate.opsForGeo().add(
                 SHIPPER_LOCATION_KEY,
                 new Point(request.getLng(), request.getLat()),
@@ -29,7 +30,7 @@ public class DeliveryLocationService {
         GeoResults<RedisGeoCommands.GeoLocation<String>> results =
                 redisTemplate.opsForGeo().search(
                         SHIPPER_LOCATION_KEY,
-                        GeoReference.fromCoordinate(lng, lat),
+                        GeoReference.fromCoordinate(lat, lng),
                         new Distance(radiusKm, Metrics.KILOMETERS)
                 );
 
