@@ -6,16 +6,17 @@ import net.sparkminds.delivery.Specification.RestaurantSpecification;
 import net.sparkminds.delivery.component.JwtUtil;
 import net.sparkminds.delivery.exception.BaseException;
 import net.sparkminds.delivery.mapper.RestaurantMapper;
+import net.sparkminds.delivery.model.Menu;
 import net.sparkminds.delivery.model.Order;
 import net.sparkminds.delivery.model.Restaurant;
 import net.sparkminds.delivery.repository.RestaurantRepository;
 import net.sparkminds.delivery.repository.UserRepository;
 import net.sparkminds.delivery.response.AuthResponse;
+import net.sparkminds.delivery.response.DistanceResponse;
 import net.sparkminds.delivery.response.RestaurantResponse;
-import net.sparkminds.delivery.service.dto.Restaurant.GetRestaurantRequest;
-import net.sparkminds.delivery.service.dto.Restaurant.RegisterRestaurantRequest;
-import net.sparkminds.delivery.service.dto.Restaurant.UpdateLocationRequest;
-import net.sparkminds.delivery.service.dto.Restaurant.UpdateRestaurantRequest;
+import net.sparkminds.delivery.service.dto.Menu.GetMenuRequest;
+import net.sparkminds.delivery.service.dto.Restaurant.*;
+import net.sparkminds.delivery.service.dto.Router.RouterRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,8 @@ public class RestaurantService {
     private final RestaurantMapper restaurantMapper;
     private final JwtUtil jwtUtil;
     private final SimpMessagingTemplate messagingTemplate;
+    private final RouterService routerService;
+    private final MenuService menuService;
 
     public AuthResponse registerRestaurant(RegisterRestaurantRequest request) {
         if (restaurantRepository.existsByEmail(request.getEmail()) || userRepository.existsByEmail(request.getEmail())) {
@@ -76,10 +79,41 @@ public class RestaurantService {
     }
 
     public List<RestaurantResponse> getRestaurant(GetRestaurantRequest request) {
-        Specification<Restaurant> spec = Specification.where(RestaurantSpecification.hasCity(request.getCityId())).and(RestaurantSpecification.hasType(request.getType())).and(RestaurantSpecification.hasCountry(request.getCountryId())).and(RestaurantSpecification.fullName(request.getFullName())).and(RestaurantSpecification.address(request.getAddress()));
+        Specification<Restaurant> spec = Specification
+                .where(RestaurantSpecification.hasCity(request.getCityId()))
+                .and(RestaurantSpecification.hasType(request.getType()))
+                .and(RestaurantSpecification.hasCountry(request.getCountryId()))
+                .and(RestaurantSpecification.fullName(request.getFullName()))
+                .and(RestaurantSpecification.address(request.getAddress()));
         List<Restaurant> restaurants = restaurantRepository.findAll(spec);
 
         return restaurantMapper.toResponseList(restaurants);
+    }
+
+    public RestaurantResponse getRestaurantById(Long id, GetRestaurantByIdRequest request) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new BaseException("RESTAURANT_NOT_FOUND"
+                , "Restaurant not found"
+                , HttpStatus.NOT_FOUND));
+
+
+        RestaurantResponse rp = restaurantMapper.toResponse(restaurant);
+
+
+        List<Menu> menu = menuService.getMenus(new GetMenuRequest(restaurant.getId(), null));
+        rp.setMenu(menu);
+        if (request.getLat() != null && request.getLng() != null) {
+            RouterRequest rq = new RouterRequest(Float.parseFloat(restaurant.getLng())
+                    , Float.parseFloat(restaurant.getLat())
+                    , request.getLng()
+                    , request.getLat());
+            DistanceResponse distanceResponse = routerService.getDistance(
+                    rq
+            );
+
+            rp.setRoute(distanceResponse);
+        }
+
+        return rp;
     }
 
     public RestaurantResponse updateLocation(UpdateLocationRequest request) {

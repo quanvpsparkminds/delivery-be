@@ -51,7 +51,6 @@ public class OrderService {
                         "User not found",
                         HttpStatus.NOT_FOUND
                 ));
-
         Order order = new Order();
         order.setRestaurant(restaurant);
         order.setUser(user);
@@ -70,8 +69,8 @@ public class OrderService {
                 ? 0f
                 : request.getDeliveryFee();
 
-        for (OrderItemRequest itemReq : request.getItems()) {
 
+        for (OrderItemRequest itemReq : request.getItems()) {
             Menu menu = menuRepository.findById(itemReq.getIdMenu()).orElseThrow(() ->
                     new BaseException("MENU_NOT_FOUND",
                             "Menu not found",
@@ -86,11 +85,12 @@ public class OrderService {
             orderItems.add(item);
         }
 
+
         order.setItems(orderItems);
         order.setTotalAmount(total + deliveryFee);
-        String idDelivery = deliveryLocationService.findNearby(request.getLat(), request.getLng(), 100).get(0);
-        System.out.print(idDelivery);
 
+
+        String idDelivery = deliveryLocationService.findNearby(request.getLng(), request.getLat(), 100).get(0);
 
         Delivery delivery = deliveryRepository.findById(Long.parseLong(idDelivery))
                 .orElseThrow(() -> new BaseException("DELIVERY_NOT_FOUND",

@@ -27,6 +27,7 @@ public class RestaurantMapper {
 
     public RestaurantResponse toResponse(Restaurant restaurant) {
         RestaurantResponse response = new RestaurantResponse();
+        response.setId(restaurant.getId());
         response.setEmail(restaurant.getEmail());
         response.setFullName(restaurant.getFullName());
         response.setPhoneCode(restaurant.getPhoneCode());

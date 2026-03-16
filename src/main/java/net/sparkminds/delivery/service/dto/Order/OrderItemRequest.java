@@ -7,4 +7,11 @@ import lombok.Data;
 public class OrderItemRequest {
     @NotNull
     private Long idMenu;
+
+    public OrderItemRequest(Long idMenu) {
+        this.idMenu = idMenu;
+    }
+
+    public OrderItemRequest() {
+    }
 }

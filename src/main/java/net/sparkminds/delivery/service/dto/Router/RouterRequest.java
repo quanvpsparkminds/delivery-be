@@ -17,4 +17,14 @@ public class RouterRequest {
 
     @NotNull
     private Float endLat;
+
+    public RouterRequest() {
+    }
+
+    public RouterRequest(Float startLng, Float startLat, Float endLng, Float endLat) {
+        this.startLng = startLng;
+        this.startLat = startLat;
+        this.endLng = endLng;
+        this.endLat = endLat;
+    }
 }

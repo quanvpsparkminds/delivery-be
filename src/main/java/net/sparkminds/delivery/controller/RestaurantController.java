@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.sparkminds.delivery.response.ApiResponse;
 import net.sparkminds.delivery.response.RestaurantResponse;
 import net.sparkminds.delivery.service.RestaurantService;
+import net.sparkminds.delivery.service.dto.Restaurant.GetRestaurantByIdRequest;
 import net.sparkminds.delivery.service.dto.Restaurant.GetRestaurantRequest;
 import net.sparkminds.delivery.service.dto.Restaurant.UpdateLocationRequest;
 import net.sparkminds.delivery.service.dto.Restaurant.UpdateRestaurantRequest;
@@ -46,5 +47,13 @@ public class RestaurantController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(restaurantService.updateLocation(request)));
+    }
+
+    @GetMapping("/{id}")
+    private ResponseEntity<ApiResponse<RestaurantResponse>> getRestaurantById(
+            @PathVariable Long id, GetRestaurantByIdRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success(restaurantService.getRestaurantById(id, request)));
     }
 }
