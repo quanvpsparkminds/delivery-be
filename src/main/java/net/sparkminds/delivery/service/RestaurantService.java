@@ -134,7 +134,8 @@ public class RestaurantService {
 
     }
 
-    public void sendOrder(String id) {
+    public void sendOrder(Long id) {
+        System.out.println(id);
         messagingTemplate.convertAndSend(
                 "/topic/restaurant/" + id,
                 "NEW_ORDER"

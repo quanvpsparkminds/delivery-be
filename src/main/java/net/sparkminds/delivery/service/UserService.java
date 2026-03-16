@@ -12,6 +12,7 @@ import net.sparkminds.delivery.response.UserResponse;
 import net.sparkminds.delivery.service.dto.User.RegisterRequest;
 import net.sparkminds.delivery.ultils.SecurityUtil;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class UserService {
     private final RestaurantRepository restaurantRepository;
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
+    private final SimpMessagingTemplate messagingTemplate;
 
 
     public AuthResponse register(RegisterRequest request) {
@@ -62,5 +64,12 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
         return userMapper.toResponse(savedUser);
+    }
+
+    public void sendOrder(Long id) {
+        messagingTemplate.convertAndSend(
+                "/topic/user/" + id,
+                "NEW_ORDER"
+        );
     }
 }

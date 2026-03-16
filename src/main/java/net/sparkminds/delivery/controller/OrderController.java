@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -34,9 +35,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(orders));
     }
 
-    @PostMapping("/status")
-    public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(@Valid @RequestBody UpdateStatusOrderRequest request) {
-        OrderResponse order = orderService.updateStatus(request);
+    @PostMapping("/status/{id}")
+    public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(@PathVariable UUID id, @Valid @RequestBody UpdateStatusOrderRequest request) {
+        OrderResponse order = orderService.updateStatus(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(order));
     }
 }

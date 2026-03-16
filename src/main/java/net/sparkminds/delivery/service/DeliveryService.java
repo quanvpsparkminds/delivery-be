@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -83,6 +84,7 @@ public class DeliveryService {
         );
     }
 
+    @Transactional
     public List<OrderResponse> getOrder() {
         String email = SecurityUtil.getCurrentUserEmail();
 
@@ -90,8 +92,7 @@ public class DeliveryService {
                 .orElseThrow(() -> new BaseException("DELIVERY_NOT_FOUND", "Delivery not found", HttpStatus.BAD_REQUEST));
 
         Specification<Order> spec = Specification
-                .where(OrderSpecification.hasDelivery(delivery.getId())
-                        .and(OrderSpecification.status(EOrderStatus.PENDING)));
+                .where(OrderSpecification.hasDelivery(delivery.getId()));
 
         List<Order> orders = orderRepository.findAll(spec);
         return orderMapper.toDtoList(orders);

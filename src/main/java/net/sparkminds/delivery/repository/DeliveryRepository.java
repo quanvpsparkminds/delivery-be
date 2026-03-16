@@ -2,6 +2,7 @@ package net.sparkminds.delivery.repository;
 
 import net.sparkminds.delivery.model.Delivery;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 

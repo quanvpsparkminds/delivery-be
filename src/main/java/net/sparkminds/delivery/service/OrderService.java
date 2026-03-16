@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,8 @@ public class OrderService {
     private final DeliveryLocationService deliveryLocationService;
     private final DeliveryService deliveryService;
     private final DeliveryRepository deliveryRepository;
+    private final RestaurantService restaurantService;
+    private final UserService userService;
 
     @Transactional
     public Order createOrder(CreateOrderRequest request) {
@@ -122,7 +125,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse updateStatus(UpdateStatusOrderRequest request) {
+    public OrderResponse updateStatus(UUID id, UpdateStatusOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
         Optional<Restaurant> restaurantOpt = restaurantRepository.findByEmail(email);
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -135,8 +138,7 @@ public class OrderService {
             throw new BaseException("NO_PERMISSION", "No permission", HttpStatus.BAD_REQUEST);
         }
 
-        Order order = orderRepository.findById(request
-                        .getOrderId())
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new BaseException(
                         "ORDER_NOT_FOUND",
                         "Order not found",
@@ -144,8 +146,11 @@ public class OrderService {
                 ));
 
         order.setStatus(request.getStatus());
-
-        orderRepository.save(order);
+        System.out.println(request.getStatus());
+        if(request.getStatus() == EOrderStatus.CONFIRMED){
+            restaurantService.sendOrder(order.getRestaurant().getId());
+            userService.sendOrder(order.getUser().getId());
+        }
 
         Order savedOrder = orderRepository.save(order);
         return orderMapper.toDto(savedOrder);
