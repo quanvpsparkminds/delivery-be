@@ -6,9 +6,9 @@ import lombok.Data;
 public class DistanceResponse {
     private Float distance;
     private Float duration;
-    private Float fee;
+    private double fee;
 
-    public DistanceResponse(Float distance, Float duration, Float fee) {
+    public DistanceResponse(Float distance, Float duration, double fee) {
         this.distance = distance;
         this.duration = duration;
         this.fee = fee;

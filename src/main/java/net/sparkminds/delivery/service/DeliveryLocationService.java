@@ -33,7 +33,6 @@ public class DeliveryLocationService {
                         GeoReference.fromCoordinate(lat, lng),
                         new Distance(radiusKm, Metrics.KILOMETERS)
                 );
-
         List<String> shippers = new ArrayList<>();
         if (results != null) {
             for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : results) {

@@ -10,5 +10,6 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     Optional<Delivery> findByEmail(String email);
 
+
     boolean existsByPhoneNumber(String phoneNumber);
 }

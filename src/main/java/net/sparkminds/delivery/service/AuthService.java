@@ -31,7 +31,7 @@ public class AuthService {
         String rawPassword = request.getPassword();
 
         String encodedPassword;
-        String subject; // email sẽ đưa vào JWT
+        String subject;
 
         switch (request.getMode()) {
             case USER -> {

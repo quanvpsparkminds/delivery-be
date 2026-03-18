@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/public")
 @RequiredArgsConstructor
-
 public class MasterDataController {
     private final CountryService countryService;
     private final DeliveryService deliveryService;

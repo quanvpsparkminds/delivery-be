@@ -33,6 +33,7 @@ public class OrderMapper {
                 .lat(order.getLat())
                 .address(order.getAddress())
                 .delivery(order.getDelivery())
+                .restaurant(order.getRestaurant())
                 .build();
     }
 

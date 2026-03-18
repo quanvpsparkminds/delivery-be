@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import net.sparkminds.delivery.enums.EOrderStatus;
 import net.sparkminds.delivery.model.Delivery;
+import net.sparkminds.delivery.model.Restaurant;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class OrderResponse {
     private UUID id;
     private String restaurantName;
+    private Restaurant restaurant;
     private String userName;
     private List<OrderItemResponse> items;
     private Float deliveryFee;

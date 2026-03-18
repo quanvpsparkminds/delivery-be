@@ -37,6 +37,6 @@ public class RouterService {
         // baseFee = 5000;
         // pricePerKm = 5000;
 
-        return new DistanceResponse(distance, duration, 1 + (distance * duration));
+        return new DistanceResponse(distance, duration, distance * 0.199);
     }
 }

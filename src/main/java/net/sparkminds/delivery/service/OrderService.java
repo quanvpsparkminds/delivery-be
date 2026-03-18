@@ -41,19 +41,9 @@ public class OrderService {
     @Transactional
     public Order createOrder(CreateOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
-                .orElseThrow(() -> new BaseException(
-                        "RESTAURANT_NOT_FOUND",
-                        "Restaurant not found",
-                        HttpStatus.NOT_FOUND
-                ));
+        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId()).orElseThrow(() -> new BaseException("RESTAURANT_NOT_FOUND", "Restaurant not found", HttpStatus.NOT_FOUND));
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BaseException(
-                        "USER_NOT_FOUND",
-                        "User not found",
-                        HttpStatus.NOT_FOUND
-                ));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new BaseException("USER_NOT_FOUND", "User not found", HttpStatus.NOT_FOUND));
         Order order = new Order();
         order.setRestaurant(restaurant);
         order.setUser(user);
@@ -68,18 +58,11 @@ public class OrderService {
         List<OrderItems> orderItems = new ArrayList<>();
 
         float total = 0f;
-        float deliveryFee = request.getDeliveryFee() == null
-                ? 0f
-                : request.getDeliveryFee();
+        float deliveryFee = request.getDeliveryFee() == null ? 0f : request.getDeliveryFee();
 
 
         for (OrderItemRequest itemReq : request.getItems()) {
-            Menu menu = menuRepository.findById(itemReq.getIdMenu()).orElseThrow(() ->
-                    new BaseException("MENU_NOT_FOUND",
-                            "Menu not found",
-                            HttpStatus.NOT_FOUND));
-
-
+            Menu menu = menuRepository.findById(itemReq.getIdMenu()).orElseThrow(() -> new BaseException("MENU_NOT_FOUND", "Menu not found", HttpStatus.NOT_FOUND));
             OrderItems item = new OrderItems();
             item.setName(menu.getName());
             item.setPrice(menu.getPrice());
@@ -91,7 +74,7 @@ public class OrderService {
 
         order.setItems(orderItems);
         order.setTotalAmount(total + deliveryFee);
-        Order response = orderRepository.save(order);
+        orderRepository.save(order);
 
         List<String> idsDelivery = deliveryLocationService.findNearby(request.getLng(), request.getLat(), 100);
 
@@ -116,11 +99,10 @@ public class OrderService {
         Long restaurantId = restaurantOpt.map(Restaurant::getId).orElse(null);
         Long userId = userOpt.map(User::getId).orElse(null);
 
-        Specification<Order> spec = Specification
-                .where(OrderSpecification.fetchAll())
+        Specification<Order> spec = Specification.where(OrderSpecification.fetchAll())
                 .and(OrderSpecification.hasRestaurant(restaurantId))
                 .and(OrderSpecification.hasUser(userId))
-                .and(OrderSpecification.status(request.getStatus()));
+                .and(OrderSpecification.statusIn(List.of(EOrderStatus.PENDING, EOrderStatus.CONFIRMED, EOrderStatus.DELIVERING)));
 
         return orderMapper.toDtoList(orderRepository.findAll(spec));
     }
@@ -134,20 +116,15 @@ public class OrderService {
         Long restaurantId = restaurantOpt.map(Restaurant::getId).orElse(null);
         Long userId = userOpt.map(User::getId).orElse(null);
 
-        if ((restaurantId != null && request.getStatus() == EOrderStatus.CANCELLED)
-                || (userId != null && request.getStatus() != EOrderStatus.CANCELLED)) {
+        if ((restaurantId != null && request.getStatus() == EOrderStatus.CANCELLED) || (userId != null && request.getStatus() != EOrderStatus.CANCELLED)) {
             throw new BaseException("NO_PERMISSION", "No permission", HttpStatus.BAD_REQUEST);
         }
 
-        Order order = orderRepository.findByIdWithItems(id)
-                .orElseThrow(() -> new BaseException(
-                        "ORDER_NOT_FOUND",
-                        "Order not found",
-                        HttpStatus.BAD_REQUEST
-                ));
+        Order order = orderRepository.findByIdWithItems(id).orElseThrow(() -> new BaseException("ORDER_NOT_FOUND", "Order not found", HttpStatus.BAD_REQUEST));
 
         order.setStatus(request.getStatus());
-        if (request.getStatus() == EOrderStatus.CONFIRMED) {
+
+        if (request.getStatus() == EOrderStatus.CONFIRMED || request.getStatus() == EOrderStatus.COMPLETED) {
             restaurantService.sendOrder(order.getRestaurant().getId());
             userService.sendOrder(order.getUser().getId());
         }
@@ -157,22 +134,42 @@ public class OrderService {
     }
 
     @Transactional
-    public Order findShipperAgain(UUID id) {
+    public OrderResponse findShipperAgain(UUID id) {
         Order order = orderRepository.findByIdWithItems(id).orElse(null);
-        if (order != null && order.getDelivery() != null) {
-            String idDelivery = deliveryLocationService.findNearby(
+
+        if (order != null && order.getDelivery() == null
+                && order.getLng() != null && order.getLat() != null) {
+
+            List<String> nearbyList = deliveryLocationService.findNearby(
                     Double.parseDouble(order.getLng()),
                     Double.parseDouble(order.getLat()),
-                    100).get(0);
-            Delivery delivery = deliveryRepository.findById(Long.parseLong(idDelivery)).orElse(null);
-            order.setDelivery(delivery);
-            orderRepository.save(order);
+                    100
+            );
+            if (!nearbyList.isEmpty()) {
+                String idDelivery = nearbyList.get(0);
+
+                Delivery delivery = deliveryRepository
+                        .findById(Long.parseLong(idDelivery))
+                        .orElse(null);
+
+                if (delivery != null) {
+                    order.setDelivery(delivery);
+                    orderRepository.save(order);
+                }
+            }
         }
-        return order;
+        return orderMapper.toDto(order);
     }
 
     public OrderResponse byId(UUID id) {
         Order order = orderRepository.findByIdWithItems(id).orElseThrow(() -> new BaseException("ORDER_NOT_FOUND", "Order not found", HttpStatus.BAD_REQUEST));
         return orderMapper.toDto(order);
+    }
+
+    @Transactional
+    public void rejectOrder(UUID id) {
+        Order order = orderRepository.findByIdWithItems(id).orElseThrow(() -> new BaseException("ORDER_NOT_FOUND", "Order not found", HttpStatus.BAD_REQUEST));
+        order.setDelivery(null);
+        orderRepository.save(order);
     }
 }
