@@ -39,17 +39,4 @@ public class NotificationService {
         notificationRepository.save(notificationToken);
     }
 
-    public void deleteToken(TokenRequest request) {
-        String email = SecurityUtil.getCurrentUserEmail();
-
-        User user = userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new BaseException(
-                        "USER_NOT_FOUND",
-                        "user not found",
-                        HttpStatus.NOT_FOUND
-                ));
-
-    }
-
 }
