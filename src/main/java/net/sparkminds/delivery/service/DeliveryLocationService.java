@@ -18,6 +18,7 @@ public class DeliveryLocationService {
     private RedisTemplate<String, String> redisTemplate;
 
     public void updateLocation(LocationDeliveryRequest request) {
+        System.out.println(request);
         redisTemplate.opsForGeo().add(
                 SHIPPER_LOCATION_KEY,
                 new Point(request.getLng(), request.getLat()),
@@ -45,6 +46,7 @@ public class DeliveryLocationService {
 
 
     public void removeShipper(Long shipperId) {
+        System.out.println(shipperId);
         redisTemplate.opsForZSet()
                 .remove(SHIPPER_LOCATION_KEY, shipperId.toString());
     }

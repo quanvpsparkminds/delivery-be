@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 @Data
 public class UserResponse {
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -17,7 +18,8 @@ public class UserResponse {
     private String phoneNumber;
     private String image;
 
-    public UserResponse(String firstName, String lastName, String email, LocalDate birthday, String phoneCode, String phoneNumber,String image) {
+    public UserResponse(Long id, String firstName, String lastName, String email, LocalDate birthday, String phoneCode, String phoneNumber, String image) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

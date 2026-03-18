@@ -30,8 +30,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Order>>> getOrder(GetOrderRequest request) {
-        List<Order> orders = orderService.getOrder(request);
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrder(GetOrderRequest request) {
+        List<OrderResponse> orders = orderService.getOrder(request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(orders));
     }
 
@@ -39,5 +39,16 @@ public class OrderController {
     public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(@PathVariable UUID id, @Valid @RequestBody UpdateStatusOrderRequest request) {
         OrderResponse order = orderService.updateStatus(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(order));
+    }
+
+    @PostMapping("/{id}/shipper")
+    public ResponseEntity<ApiResponse<Order>> findShipper(@PathVariable UUID id) {
+        Order order = orderService.findShipperAgain(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(order));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderResponse>> byId(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(orderService.byId(id)));
     }
 }

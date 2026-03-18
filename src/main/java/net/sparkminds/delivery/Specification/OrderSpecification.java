@@ -6,7 +6,21 @@ import net.sparkminds.delivery.enums.EOrderStatus;
 import net.sparkminds.delivery.model.Order;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 public class OrderSpecification {
+    public static Specification<Order> fetchAll() {
+        return (root, query, cb) -> {
+            root.fetch("delivery", JoinType.LEFT);
+            root.fetch("user", JoinType.LEFT);
+            root.fetch("restaurant", JoinType.LEFT);
+
+            query.distinct(true);
+
+            return cb.conjunction();
+        };
+    }
+
     public static Specification<Order> hasRestaurant(Long restaurantId) {
         return (root, query, cb) -> {
             if (Order.class.equals(query.getResultType())) {
@@ -66,6 +80,13 @@ public class OrderSpecification {
         return (root, query, cb) -> {
             if (status == null) return null;
             return cb.equal(root.get("status"), status);
+        };
+    }
+
+    public static Specification<Order> statusIn(List<EOrderStatus> statuses) {
+        return (root, query, cb) -> {
+            if (statuses == null || statuses.isEmpty()) return null;
+            return root.get("status").in(statuses);
         };
     }
 }

@@ -87,12 +87,13 @@ public class DeliveryService {
     @Transactional
     public List<OrderResponse> getOrder() {
         String email = SecurityUtil.getCurrentUserEmail();
-
+        System.out.println(email);
         Delivery delivery = deliveryRepository.findByEmail(email)
                 .orElseThrow(() -> new BaseException("DELIVERY_NOT_FOUND", "Delivery not found", HttpStatus.BAD_REQUEST));
 
         Specification<Order> spec = Specification
-                .where(OrderSpecification.hasDelivery(delivery.getId()));
+                .where(OrderSpecification.hasDelivery(delivery.getId()))
+                .and(OrderSpecification.statusIn(List.of(EOrderStatus.PENDING, EOrderStatus.CONFIRMED)));
 
         List<Order> orders = orderRepository.findAll(spec);
         return orderMapper.toDtoList(orders);

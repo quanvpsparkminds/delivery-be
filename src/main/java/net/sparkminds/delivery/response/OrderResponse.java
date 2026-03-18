@@ -3,6 +3,7 @@ package net.sparkminds.delivery.response;
 import lombok.Builder;
 import lombok.Data;
 import net.sparkminds.delivery.enums.EOrderStatus;
+import net.sparkminds.delivery.model.Delivery;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,4 +24,5 @@ public class OrderResponse {
     private String lng;
     private String lat;
     private String address;
+    private Delivery delivery;
 }

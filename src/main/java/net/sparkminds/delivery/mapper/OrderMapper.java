@@ -32,6 +32,7 @@ public class OrderMapper {
                 .lng(order.getLng())
                 .lat(order.getLat())
                 .address(order.getAddress())
+                .delivery(order.getDelivery())
                 .build();
     }
 

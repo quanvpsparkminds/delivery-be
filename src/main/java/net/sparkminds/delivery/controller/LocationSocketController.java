@@ -17,4 +17,9 @@ public class LocationSocketController {
     public void updateLocation(LocationDeliveryRequest request) {
         deliveryLocationService.updateLocation(request);
     }
+
+    @MessageMapping("/shipper/location/remove")
+    public void removeLocation(Long id) {
+        deliveryLocationService.removeShipper(id);
+    }
 }

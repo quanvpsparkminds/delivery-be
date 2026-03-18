@@ -10,6 +10,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order> {
-    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.items WHERE o.id = :id")
+    @Query("SELECT DISTINCT o FROM Order o\n" +
+            "LEFT JOIN FETCH o.items\n" +
+            "LEFT JOIN FETCH o.user\n" +
+            "LEFT JOIN FETCH o.restaurant\n" +
+            "LEFT JOIN FETCH o.delivery\n" +
+            "WHERE o.id = :id")
     Optional<Order> findByIdWithItems(@Param("id") UUID id);
 }

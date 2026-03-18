@@ -101,16 +101,21 @@ public class RestaurantService {
 
         List<Menu> menu = menuService.getMenus(new GetMenuRequest(restaurant.getId(), null));
         rp.setMenu(menu);
-        if (request.getLat() != null && request.getLng() != null) {
-            RouterRequest rq = new RouterRequest(Float.parseFloat(restaurant.getLng())
-                    , Float.parseFloat(restaurant.getLat())
-                    , request.getLng()
-                    , request.getLat());
-            DistanceResponse distanceResponse = routerService.getDistance(
-                    rq
-            );
+        try {
+            if (request.getLat() != null && request.getLng() != null
+                    && restaurant.getLat() != null && restaurant.getLng() != null) {
 
-            rp.setRoute(distanceResponse);
+                RouterRequest rq = new RouterRequest(
+                        Float.parseFloat(restaurant.getLng()),
+                        Float.parseFloat(restaurant.getLat()),
+                        request.getLng(),
+                        request.getLat()
+                );
+
+                rp.setRoute(routerService.getDistance(rq));
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid lat/lng: " + e.getMessage());
         }
 
         return rp;

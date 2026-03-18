@@ -91,24 +91,24 @@ public class OrderService {
 
         order.setItems(orderItems);
         order.setTotalAmount(total + deliveryFee);
-
-
-        String idDelivery = deliveryLocationService.findNearby(request.getLng(), request.getLat(), 100).get(0);
-
-        Delivery delivery = deliveryRepository.findById(Long.parseLong(idDelivery))
-                .orElseThrow(() -> new BaseException("DELIVERY_NOT_FOUND",
-                        "Delivery not found",
-                        HttpStatus.NOT_FOUND));
-        order.setDelivery(delivery);
         Order response = orderRepository.save(order);
 
-        deliveryService.sendOrder(idDelivery);
+        List<String> idsDelivery = deliveryLocationService.findNearby(request.getLng(), request.getLat(), 100);
 
+        if (!idsDelivery.isEmpty()) {
+            Delivery delivery = deliveryRepository.findById(Long.parseLong(idsDelivery.get(0))).orElse(null);
+            if (delivery != null) {
+                order.setDelivery(delivery);
+                orderRepository.save(order);
+                deliveryService.sendOrder(idsDelivery.get(0));
+            }
+        }
 
-        return response;
+        return order;
     }
 
-    public List<Order> getOrder(GetOrderRequest request) {
+    @Transactional
+    public List<OrderResponse> getOrder(GetOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
         Optional<Restaurant> restaurantOpt = restaurantRepository.findByEmail(email);
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -117,11 +117,12 @@ public class OrderService {
         Long userId = userOpt.map(User::getId).orElse(null);
 
         Specification<Order> spec = Specification
-                .where(OrderSpecification.hasRestaurant(restaurantId))
+                .where(OrderSpecification.fetchAll())
+                .and(OrderSpecification.hasRestaurant(restaurantId))
                 .and(OrderSpecification.hasUser(userId))
                 .and(OrderSpecification.status(request.getStatus()));
 
-        return orderRepository.findAll(spec);
+        return orderMapper.toDtoList(orderRepository.findAll(spec));
     }
 
     @Transactional
@@ -138,7 +139,7 @@ public class OrderService {
             throw new BaseException("NO_PERMISSION", "No permission", HttpStatus.BAD_REQUEST);
         }
 
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findByIdWithItems(id)
                 .orElseThrow(() -> new BaseException(
                         "ORDER_NOT_FOUND",
                         "Order not found",
@@ -146,15 +147,32 @@ public class OrderService {
                 ));
 
         order.setStatus(request.getStatus());
-        System.out.println(request.getStatus());
-        if(request.getStatus() == EOrderStatus.CONFIRMED){
+        if (request.getStatus() == EOrderStatus.CONFIRMED) {
             restaurantService.sendOrder(order.getRestaurant().getId());
             userService.sendOrder(order.getUser().getId());
         }
 
-        Order savedOrder = orderRepository.save(order);
-        return orderMapper.toDto(savedOrder);
+        orderRepository.save(order);
+        return orderMapper.toDto(order);
     }
 
+    @Transactional
+    public Order findShipperAgain(UUID id) {
+        Order order = orderRepository.findByIdWithItems(id).orElse(null);
+        if (order != null && order.getDelivery() != null) {
+            String idDelivery = deliveryLocationService.findNearby(
+                    Double.parseDouble(order.getLng()),
+                    Double.parseDouble(order.getLat()),
+                    100).get(0);
+            Delivery delivery = deliveryRepository.findById(Long.parseLong(idDelivery)).orElse(null);
+            order.setDelivery(delivery);
+            orderRepository.save(order);
+        }
+        return order;
+    }
 
+    public OrderResponse byId(UUID id) {
+        Order order = orderRepository.findByIdWithItems(id).orElseThrow(() -> new BaseException("ORDER_NOT_FOUND", "Order not found", HttpStatus.BAD_REQUEST));
+        return orderMapper.toDto(order);
+    }
 }
