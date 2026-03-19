@@ -37,6 +37,7 @@ public class OrderService {
     private final DeliveryRepository deliveryRepository;
     private final RestaurantService restaurantService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Transactional
     public Order createOrder(CreateOrderRequest request) {
@@ -107,6 +108,24 @@ public class OrderService {
         return orderMapper.toDtoList(orderRepository.findAll(spec));
     }
 
+
+    @Transactional
+    public List<OrderResponse> getOrderRes(GetOrderRequest request) {
+        String email = SecurityUtil.getCurrentUserEmail();
+        Optional<Restaurant> restaurantOpt = restaurantRepository.findByEmail(email);
+        Optional<User> userOpt = userRepository.findByEmail(email);
+
+        Long restaurantId = restaurantOpt.map(Restaurant::getId).orElse(null);
+        Long userId = userOpt.map(User::getId).orElse(null);
+
+        Specification<Order> spec = Specification.where(OrderSpecification.fetchAll())
+                .and(OrderSpecification.hasRestaurant(restaurantId))
+                .and(OrderSpecification.hasUser(userId))
+                .and(OrderSpecification.status(request.getStatus()));
+
+        return orderMapper.toDtoList(orderRepository.findAll(spec));
+    }
+
     @Transactional
     public OrderResponse updateStatus(UUID id, UpdateStatusOrderRequest request) {
         String email = SecurityUtil.getCurrentUserEmail();
@@ -126,7 +145,10 @@ public class OrderService {
 
         if (request.getStatus() == EOrderStatus.CONFIRMED || request.getStatus() == EOrderStatus.COMPLETED) {
             restaurantService.sendOrder(order.getRestaurant().getId());
-            userService.sendOrder(order.getUser().getId());
+            userService.sendSocket(order.getUser().getId(), request.getStatus().toString());
+            if (request.getStatus() == EOrderStatus.COMPLETED) {
+                notificationService.sendNotification(order.getUser().getId(), "Đơn hàng đã giao thành công", "Đơn hàng " + order.getId() + " đã được giao thành công");
+            }
         }
 
         orderRepository.save(order);

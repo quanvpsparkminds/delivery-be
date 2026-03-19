@@ -66,10 +66,10 @@ public class UserService {
         return userMapper.toResponse(savedUser);
     }
 
-    public void sendOrder(Long id) {
+    public void sendSocket(Long id, String type) {
         messagingTemplate.convertAndSend(
                 "/topic/user/" + id,
-                "NEW_ORDER"
+                "type"
         );
     }
 }

@@ -35,6 +35,12 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(orders));
     }
 
+    @GetMapping("/restaurant")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrderRes(GetOrderRequest request) {
+        List<OrderResponse> orders = orderService.getOrderRes(request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(orders));
+    }
+
     @PostMapping("/status/{id}")
     public ResponseEntity<ApiResponse<OrderResponse>> updateStatus(@PathVariable UUID id, @Valid @RequestBody UpdateStatusOrderRequest request) {
         OrderResponse order = orderService.updateStatus(id, request);

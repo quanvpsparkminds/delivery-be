@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<UserResponse>> me(){
+    public ResponseEntity<ApiResponse<UserResponse>> me() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(userService.getUserMe()));

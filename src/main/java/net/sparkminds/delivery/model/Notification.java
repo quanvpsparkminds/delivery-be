@@ -2,7 +2,6 @@ package net.sparkminds.delivery.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
@@ -26,4 +25,7 @@ public class Notification {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "is_seen")
+    private Boolean isSeen;
 }
