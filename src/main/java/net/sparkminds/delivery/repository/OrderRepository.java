@@ -1,6 +1,8 @@
 package net.sparkminds.delivery.repository;
 
 import net.sparkminds.delivery.model.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +27,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
             "LEFT JOIN FETCH o.restaurant\n" +
             "LEFT JOIN FETCH o.delivery\n" +
             "WHERE o.restaurant.id = :id")
-    Optional<List<Order>> findByRestaurant(@Param("id") Long id);
+    Page<Order> findByRestaurant(@Param("id") Long id, Pageable pageable);
 
     @Query("SELECT DISTINCT o FROM Order o\n" +
             "LEFT JOIN FETCH o.items\n" +
@@ -33,5 +35,5 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
             "LEFT JOIN FETCH o.restaurant\n" +
             "LEFT JOIN FETCH o.delivery\n" +
             "WHERE o.delivery.id = :id")
-    Optional<List<Order>> findByDelivery(@Param("id") Long id);
+    Page<Order> findByDelivery(@Param("id") Long id, Pageable pageable);
 }
