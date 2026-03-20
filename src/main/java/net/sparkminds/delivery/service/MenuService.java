@@ -46,8 +46,16 @@ public class MenuService {
     }
 
     public List<Menu> getMenus(GetMenuRequest request) {
+        Long idRestaurant = request.getRestaurantId();
+        if(idRestaurant == null){
+            String email = SecurityUtil.getCurrentUserEmail();
+            Restaurant restaurant = restaurantRepository.findByEmail(email).orElse(null);
+            if(request != null){
+                idRestaurant = restaurant.getId();
+            }
+        }
         Specification<Menu> spec = Specification
-                .where(MenuSpecification.hasRestaurant(request.getRestaurantId()))
+                .where(MenuSpecification.hasRestaurant(idRestaurant))
                 .and(MenuSpecification.hasType(request.getType()))
                 .and(MenuSpecification.hasDelete(false));
         return menuRepository.findAll(spec);
