@@ -3,9 +3,9 @@ spring:
     name: delivery
 
   datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: jdbc:postgresql://gondola.proxy.rlwy.net:47130/railway
+    username: postgres
+    password: TecoILLEmAGzAdlLRowPAlyyIEbVsCdf
 
   jpa:
     hibernate:
