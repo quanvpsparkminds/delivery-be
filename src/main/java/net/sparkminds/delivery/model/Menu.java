@@ -38,15 +38,19 @@ public class Menu {
     @Column(name = "is_delete")
     private Boolean isDelete;
 
+    @Column(name = "description")
+    private String description;
+
     public Menu() {
     }
 
-    public Menu(String image, EFood type, Float originPrice, Float price, String name, Restaurant restaurant) {
+    public Menu(String image, EFood type, Float originPrice, Float price, String name, Restaurant restaurant, String description) {
         this.image = image;
         this.type = type;
         this.originPrice = originPrice;
         this.price = price;
         this.name = name;
         this.restaurant = restaurant;
+        this.description = description;
     }
 }

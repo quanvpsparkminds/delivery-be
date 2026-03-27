@@ -21,4 +21,6 @@ public class CreateMenuRequest {
     private EFood type;
 
     private String image;
+
+    private String description;
 }

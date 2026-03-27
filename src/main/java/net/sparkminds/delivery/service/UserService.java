@@ -67,9 +67,10 @@ public class UserService {
     }
 
     public void sendSocket(Long id, String type) {
+        System.out.println("/topic/user/" + id);
         messagingTemplate.convertAndSend(
-                "/topic/user/" + id,
-                "type"
+                "/topic/user/" + id.toString(),
+                type
         );
     }
 }

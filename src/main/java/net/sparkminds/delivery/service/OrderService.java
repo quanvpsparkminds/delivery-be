@@ -193,5 +193,6 @@ public class OrderService {
         Order order = orderRepository.findByIdWithItems(id).orElseThrow(() -> new BaseException("ORDER_NOT_FOUND", "Order not found", HttpStatus.BAD_REQUEST));
         order.setDelivery(null);
         orderRepository.save(order);
+        findShipperAgain(id);
     }
 }

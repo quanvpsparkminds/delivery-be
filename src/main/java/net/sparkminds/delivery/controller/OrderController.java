@@ -58,7 +58,7 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(orderService.byId(id)));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("shipper/{id}/reject")
     public ResponseEntity<ApiResponse<Void>> rejectOrder(@PathVariable UUID id) {
         orderService.rejectOrder(id);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));

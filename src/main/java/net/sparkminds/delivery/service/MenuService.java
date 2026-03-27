@@ -39,7 +39,8 @@ public class MenuService {
                 request.getOriginPrice(),
                 request.getPrice(),
                 request.getName(),
-                restaurant
+                restaurant,
+                request.getDescription()
         );
         menu.setIsDelete(false);
         menuRepository.save(menu);
@@ -47,10 +48,10 @@ public class MenuService {
 
     public List<Menu> getMenus(GetMenuRequest request) {
         Long idRestaurant = request.getRestaurantId();
-        if(idRestaurant == null){
+        if (idRestaurant == null) {
             String email = SecurityUtil.getCurrentUserEmail();
             Restaurant restaurant = restaurantRepository.findByEmail(email).orElse(null);
-            if(request != null){
+            if (request != null) {
                 idRestaurant = restaurant.getId();
             }
         }
