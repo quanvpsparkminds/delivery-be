@@ -3,9 +3,9 @@ spring:
     name: delivery
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/delivery
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
 
   jpa:
     hibernate:
@@ -24,6 +24,9 @@ spring:
 
   file:
     upload-dir: uploads
+
+server:
+  port: ${PORT:8080}
 
 jwt:
   secret: 12345678901234567890123456789012
